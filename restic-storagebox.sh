@@ -33,8 +33,12 @@ case "$1" in
 		done
 
 		# Delete old backups
-		restic -r sftp://$USERNAME@$URL:23/$REPONAME forget --keep-within 2m --prune
+		restic -r sftp://$USERNAME@$URL:23/$REPONAME forget --keep-within $KEEP_WITHIN --prune
 		;;
+		
+    "snapshots")
+        restic -r sftp://$USERNAME@$URL:23/$REPONAME snapshots
+        ;;		
 		
 esac
 

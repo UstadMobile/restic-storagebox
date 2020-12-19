@@ -19,7 +19,7 @@ if [ "$MYSQL_INSTALLED" != "" ]; then
 	fi
 
 	mysqldump $MYSQL_CONFIG -u root --all-databases > $DESTDIR/mysql_all.sql
-	gzip $DESTDIR/mysql_all.sql
+	gzip -f $DESTDIR/mysql_all.sql
 fi
 
 POSTGRES_INSTALLED=$(dpkg -l | grep postgres)
@@ -27,6 +27,6 @@ POSTGRES_INSTALLED=$(dpkg -l | grep postgres)
 if [ "$POSTGRES_INSTALLED" != "" ]; then
     echo "dump postgres databases"
     sudo -u postgres pg_dumpall > $DESTDIR/postgres_all.sql
-    gzip  $DESTDIR/postgres_all.sql
+    gzip  -f $DESTDIR/postgres_all.sql
 fi
 

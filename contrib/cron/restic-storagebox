@@ -1,0 +1,2 @@
+0 0 * * * root /opt/restic-storagebox/restic-storagebox.sh backup > /dev/null 2>&1
+

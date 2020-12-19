@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DESTDIR="/opt/restic-storagebox/data/dbs"
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [ ! -e $DESTDIR ]; then
+   mkdir -p $DESTDIR
+fi
+
+MYSQL_INSTALLED=$(dpkg -l | grep mysql-server)
+
+if [ "$MYSQL_INSTALLED" != "" ]; then
+    echo "Dump mysql dbs"
+  
+	if [ -e $BASEDIR/my.cnf ]; then
+	   MYSQL_CONFIG="--defaults-extra-file=$BASEDIR/my.cnf"
+	else
+	   MYSQL_CONFIG=""
+	fi
+
+	mysqldump $MYSQL_CONFIG -u root --all-databases > $DESTDIR/mysql_all.sql
+	gzip $DESTDIR/mysql_all.sql
+fi
+
+POSTGRES_INSTALLED=$(dpkg -l | grep postgres)
+
+if [ "$POSTGRES_INSTALLED" != "" ]; then
+    echo "dump postgres databases"
+    sudo -u postgres pg_dumpall > $DESTDIR/postgres_all.sql
+    gzip  $DESTDIR/postgres_all.sql
+fi
+

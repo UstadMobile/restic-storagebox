@@ -33,7 +33,13 @@ case "$1" in
 		done
 
 		# Delete old backups
-		restic -r sftp://$USERNAME@$URL:23/$REPONAME forget --keep-within $KEEP_WITHIN --prune
+		
+		if [ "$KEEP_ARGS" != "" ]; then
+		    restic -r sftp://$USERNAME@$URL:23/$REPONAME forget $KEEP_ARGS --prune
+    	else
+    	    echo "restic-storagebox: WARNING: no setting given for forget / prune"
+    	fi    
+		
 		;;
 		
     "snapshots")

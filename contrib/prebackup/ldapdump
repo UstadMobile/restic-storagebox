@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#Notes from https://serverfault.com/questions/869162/backup-ldap-database
+
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DESTDIR="/opt/restic-storagebox/data/ldap"
+BASEDN="dc=ustadmobile,dc=com"
+
+if [ ! -e $DESTDIR ]; then
+    mkdir $DESTDIR
+fi
+
+slapcat -b cn=config > $DESTDIR/config.ldif
+slapcat -b $BASEDN > $DESTDIR/basedn.ldif
+

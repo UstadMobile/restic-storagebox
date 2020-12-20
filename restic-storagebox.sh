@@ -19,21 +19,16 @@ case "$1" in
 		# databases, etc.
 
 		run-parts $SCRIPTDIR/prebackup.d/
-
-		for dir in $DIRS_TO_BACKUP; do
-		    echo "Backup $dir"
-		    DIR_EXCLUDE_FILE=$(echo $dir | sed 's/\//_/g').exclude.txt
-		    if [ -f $DIR_EXCLUDE_FILE ]; then
-		        EXCLUDES="--exclude-file $DIR_EXCLUDE_FILE"
-		    else 
-		        EXCLUDES=""     
-		    fi
-		    
-			restic -r sftp://$USERNAME@$URL:23/$REPONAME backup $dir $EXCLUDES
-		done
+		
+		if [ -f $SCRIPTDIR/excludes.txt ]; then
+	        EXCLUDES="--exclude-file=$DIR_EXCLUDE_FILE"
+	    else 
+	        EXCLUDES=""     
+	    fi
+		
+		restic -r sftp://$USERNAME@$URL:23/$REPONAME backup $DIRS_TO_BACKUP $EXCLUDES 
 
 		# Delete old backups
-		
 		if [ "$KEEP_ARGS" != "" ]; then
 		    restic -r sftp://$USERNAME@$URL:23/$REPONAME forget $KEEP_ARGS --prune
     	else
